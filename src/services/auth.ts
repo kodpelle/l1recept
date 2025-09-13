@@ -7,3 +7,8 @@ export async function login(email: string, password: string) {
   if (!response.ok) throw new Error("Login failed");
   return response.json();
 }
+
+export async function logout() {
+  const response = await fetch("/api/login", { method: "DELETE" });
+  if (!response.ok) throw new Error("Logout failed");
+}
