@@ -1,3 +1,7 @@
 export default function Footer() {
-  return <h1 style={{ color: "purple" }}>Footer Component</h1>;
+  return (
+    <footer className="app-footer bg-dark text-white text-center py-3">
+      © 2025 L1Recept
+    </footer>
+  );
 }
