@@ -1,46 +1,46 @@
 import { useState } from "react";
-import { login } from "../services/auth";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-function LoginPage() {
+
+ function LoginPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState(""); 
+  const [password, setPassword] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
-  try {
-    const data = await login(email, password);
-    console.log("Logged in:", data);
-  } catch (err) {
-    console.error(err);
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      await login(email, password); 
+      navigate("/recipes");
+    } catch (err) {
+      console.error("Login failed:", err);
+    }
   }
-}
 
   return (
-    <div>
+    <form onSubmit={handleSubmit}>
       <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Login</button>
-      </form>
-    </div>
+      <input
+        type="text"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button type="submit">Login</button>
+    </form>
   );
 }
-
 LoginPage.route = {
   path: "/login",
-  menuLabel: "Login",
   index: 1,
-};
-
+  menuLabel: "Login",
+}
 export default LoginPage;
