@@ -12,3 +12,8 @@ export async function logout() {
   const response = await fetch("/api/login", { method: "DELETE" });
   if (!response.ok) throw new Error("Logout failed");
 }
+export async function getCurrentUser() {
+  const response = await fetch("/api/login");
+  if (!response.ok) return null; 
+  return response.json();
+}
