@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (currentUser) setUser(currentUser);      
     }
     checkLogin();
-  })
+  }, []);
 
   //funktion för att logga in en användare, anropar loginRequest(fetch mot backend) och uppdaterar user state
   const login = async (email: string, password: string) => {
