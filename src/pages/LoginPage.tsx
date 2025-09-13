@@ -1,33 +1,20 @@
 import { useState } from "react";
+import { login } from "../services/auth";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState(""); 
 
- async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault(); 
-    console.log("Email:", email);
-    console.log("Password:", password);
-  
-
-const response = await fetch("/api/login", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    email: email.toString(),
-    password: password.toString(),
-  }),
-});
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log('Login successful:', data);
-      // Handle successful login (e.g., redirect, store token)
-    } else {
-      console.error('Login failed');
-      // Handle login failure (e.g., show error message)
-    }
+async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
+  try {
+    const data = await login(email, password);
+    console.log("Logged in:", data);
+  } catch (err) {
+    console.error(err);
+  }
 }
+
   return (
     <div>
       <h1>Login</h1>
