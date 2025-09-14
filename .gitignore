@@ -32,3 +32,21 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# --- Backend build output (.NET) ---
+backend/bin/
+backend/obj/
+*.dll
+*.exe
+*.pdb
+
+# --- SQLite runtime database ---
+backend/_db.sqlite3
+*.db
+*.db-shm
+*.db-wal
+
+# Keep template DB!
+!backend/db_template/_db.sqlite3
+
+# --- Windows / OS files ---
+Thumbs.db

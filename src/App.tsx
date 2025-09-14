@@ -1,11 +1,15 @@
-import { useLocation } from 'react-router-dom';
+import Header from "./partials/Header";
+import Main from "./partials/Content";
+import Footer from "./partials/Footer";
+import "../sass/_sticky-footer.scss";
 
 
 export default function App() {
-
-  // scroll to top when the route changes
-  useLocation();
-  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-
-  return 
-};
+  return (
+    <div id="root">
+      <Header />
+      <Main />
+      <Footer />
+    </div>
+  );
+}
