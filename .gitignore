@@ -4,6 +4,9 @@
 # if the live.db is missing the backend will create it
 # from template.db
 backend/databases/live.sqlite3
+backend/bin/
+backend/obj/
+
 
 # Logs
 logs
