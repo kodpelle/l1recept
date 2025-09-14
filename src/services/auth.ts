@@ -19,11 +19,14 @@ export async function getCurrentUser() {
 }
 
 export async function register(email: string, password: string, firstName: string, lastName: string) {
-  const response = await fetch("/api/register", {
+  const response = await fetch("/api/users", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password, firstName, lastName }),
   });
-  if (!response.ok) throw new Error("Registration failed");
+  if (!response.ok) {
+    const errorData = await response.text();
+    throw new Error(`Registration failed (${response.status}): ${errorData}`);
+  }
   return response.json();
 }
