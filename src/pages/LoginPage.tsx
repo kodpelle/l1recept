@@ -27,7 +27,7 @@ function LoginPage() {
         <Col>
           <Card className="mt-5 d-flex flex-column align-items-center justify-content-center shadow">
             <Card.Body>
-              <Card.Title className="mb-4 text-center">Logga in</Card.Title>
+              {/*<Card.Title className="mb-4 text-center">Logga in</Card.Title>*/}
 
               <form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formEmail">
@@ -53,6 +53,9 @@ function LoginPage() {
                 </Form.Group>
                 <Button variant="primary" type="submit" className="w-100">
                   Login
+                </Button>
+                <Button variant="link" className="w-100 mt-2" onClick={() => navigate("/register")}>
+                  Create new account
                 </Button>
               </form>
             </Card.Body>
