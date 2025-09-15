@@ -78,9 +78,15 @@ function registerPage() {
                                         required
                                     />
                                 </Form.Group>
-
                                 <Button variant="primary" type="submit" className="w-100" disabled={isSubmitting}>
-                                    {isSubmitting ? "Registering..." : "Register"}
+                                    {isSubmitting ? (
+                                        <>
+                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            Register
+                                        </>
+                                    ) : (
+                                        "Register"
+                                    )}
                                 </Button>
                                 <Button
                                     variant="link"
@@ -89,7 +95,7 @@ function registerPage() {
                                 >
                                     Already have an account? Login
                                 </Button>
-                                <div className="text-danger mt-2">{errormessage}</div>
+                                <div className="text-danger mt-2 text-center">{errormessage}</div>
                             </form>
                         </Card.Body>
                     </Card>
