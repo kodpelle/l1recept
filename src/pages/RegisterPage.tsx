@@ -11,6 +11,7 @@ function registerPage() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const navigate = useNavigate();
+    const [errormessage, setErrorMessage] = useState('');
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -19,7 +20,7 @@ function registerPage() {
             navigate('/login');
         } catch (error) {
             console.error(error);
-            alert('Registration failed');
+            setErrorMessage('Registration failed.');
         }
     }
     return (
@@ -83,6 +84,7 @@ function registerPage() {
                                 >
                                     Already have an account? Login
                                 </Button>
+                                <div className="text-danger mt-2">{errormessage}</div>
                             </form>
                         </Card.Body>
                     </Card>
