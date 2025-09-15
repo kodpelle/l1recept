@@ -10,17 +10,22 @@ function registerPage() {
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const navigate = useNavigate();
     const [errormessage, setErrorMessage] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const navigate = useNavigate();
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+        setIsSubmitting(true);
         try {
             await register(email, password, firstName, lastName);
             navigate('/login');
         } catch (error) {
             console.error(error);
             setErrorMessage('Registration failed.');
+        }
+        finally {
+            setIsSubmitting(false);
         }
     }
     return (
@@ -74,8 +79,8 @@ function registerPage() {
                                     />
                                 </Form.Group>
 
-                                <Button variant="primary" type="submit" className="w-100">
-                                    Register
+                                <Button variant="primary" type="submit" className="w-100" disabled={isSubmitting}>
+                                    {isSubmitting ? "Registering..." : "Register"}
                                 </Button>
                                 <Button
                                     variant="link"
