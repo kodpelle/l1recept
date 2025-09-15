@@ -7,6 +7,7 @@ import { Container, Row, Col, Card, Form, Button, } from "react-bootstrap";
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errormessage, setErrorMessage] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -17,6 +18,7 @@ function LoginPage() {
       navigate("/recipes");
     } catch (err) {
       console.error("Login failed:", err);
+      setErrorMessage('Invalid email or password.');
     }
   }
 
@@ -57,6 +59,7 @@ function LoginPage() {
                 <Button variant="link" className="w-100 mt-2" onClick={() => navigate("/register")}>
                   Create new account
                 </Button>
+                <div className="text-danger mt-2 text-center">{errormessage}</div>
               </form>
             </Card.Body>
           </Card>
