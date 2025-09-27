@@ -36,6 +36,9 @@ export default function RecipesListPage() {
                             <div>{r.title}</div>
                             <div>{r.description}</div>
                             <div>{r.category}</div>
+                            {r.imageUrl} && (
+                            <img src={r.imageUrl} alt={r.title} style={{ maxWidth: 160, height: 'auto', borderRadius: 0 }} />
+                            )
                         </li>
                     ))}
                 </ul>

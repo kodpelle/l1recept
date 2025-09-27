@@ -5,6 +5,7 @@ export interface Recipe {
     category?: string;
     createdAt: string;
     userId: number;
+    imageUrl?: string;
 }
 
 export async function getrecipes(): Promise<Recipe[]> {
