@@ -73,7 +73,7 @@ export default function RecipeNewPage() {
                 <div className="card p-3">
                     <h5 className="mb-3">Ingredienser</h5>
                     <div className="d-flex gap-2 align-items-center">
-                        <select className="form-select" value={pickIngId as any} onChange={e => setPickIngId(Number(e.target.value))}>
+                        <select className="form-select" value={pickIngId} onChange={e => setPickIngId(Number(e.target.value))}>
                             <option value="">Välj ingrediens…</option>
                             {allIngs.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
                         </select>
