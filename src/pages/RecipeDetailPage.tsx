@@ -17,14 +17,14 @@ export default function RecipeDetailPage() {
                 setLoading(true);
                 const r = await getRecipeById(recipeId);
                 setRecipe(r);
-            } catch (e) {
+            } catch (e: unknown) {
                 if (e instanceof Error) {
                     setErr(e.message);
                 } else {
                     setErr("Okänt fel inträffade.");
                 }
-
-            } finally {
+            }
+            finally {
                 setLoading(false);
             }
         })();
