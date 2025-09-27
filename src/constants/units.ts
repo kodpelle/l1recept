@@ -1,0 +1,1 @@
+export const UNITS = ["tsk, msk, krm, dl, cl, ml, l, msk, g, kg, st, krm, nypa, klyfta, skiva, paket, burk, flaska, påse"] as const;
