@@ -21,6 +21,8 @@ export default function RecipeNewPage() {
     >([]);
 
 
+
+
     const [pickIngId, setPickIngId] = useState<number | "">("");
     const [pickQty, setPickQty] = useState("");
     const [pickUnit, setPickUnit] = useState<Unit>(UNITS[0]);
@@ -28,6 +30,7 @@ export default function RecipeNewPage() {
     useEffect(() => {
         getIngredients().then(setAllIngs).catch(console.error);
     }, []);
+
 
     function addPicked() {
         if (!pickIngId || !pickQty.trim()) return;
@@ -48,18 +51,20 @@ export default function RecipeNewPage() {
         if (!user) { alert("Du måste vara inloggad."); return; }
 
         try {
-            const recipe = await createRecipe({ title, description, category, imageUrl, userId: user.id });
-
+            const created = await createRecipe({ title, description, category, imageUrl, userId: user.id });
+            const recipeId = created.id;
             for (const s of selected) {
                 const amount = s.qty ? `${s.qty} ${s.unit}` : s.unit;
-                await addRecipeIngredient({ recipeId: recipe.id, ingredientId: s.ingredientId, amount });
+                await addRecipeIngredient({ recipeId, ingredientId: s.ingredientId, amount });
             }
-            navigate(`/recipes/${recipe.id}`);
+
+            navigate(`/recipes/${recipeId}`);
         } catch (err) {
             console.error(err);
             alert("Kunde inte spara receptet.");
         }
     }
+
 
     return (
         <div className="container py-4">
@@ -73,7 +78,14 @@ export default function RecipeNewPage() {
                 <div className="card p-3">
                     <h5 className="mb-3">Ingredienser</h5>
                     <div className="d-flex gap-2 align-items-center">
-                        <select className="form-select" value={pickIngId} onChange={e => setPickIngId(Number(e.target.value))}>
+                        <select
+                            className="form-select"
+                            value={pickIngId}
+                            onChange={(e) => {
+                                const v = e.target.value;
+                                setPickIngId(v === "" ? "" : Number(v));
+                            }}
+                        >
                             <option value="">Välj ingrediens…</option>
                             {allIngs.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
                         </select>
