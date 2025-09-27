@@ -4,6 +4,7 @@ import { createElement } from 'react';
 import LoginPage from "./pages/LoginPage";
 import registerPage from './pages/RegisterPage';
 import RecipesListPage from './pages/RecipesListPage';
+import RecipeNewPage from './pages/RecipeNewPage';
 
 interface Route {
   element: JSX.Element;
@@ -18,7 +19,8 @@ interface Route {
 export default [
   LoginPage,
   registerPage,
-  RecipesListPage
+  RecipesListPage,
+  RecipeNewPage
 ]
   // map the route property of each page component to a Route
   .map(x => (({ element: createElement(x), ...x.route }) as Route))
