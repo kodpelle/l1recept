@@ -1,8 +1,9 @@
-import type {JSX} from 'react';
-import{createElement} from 'react';
+import type { JSX } from 'react';
+import { createElement } from 'react';
 // page components
 import LoginPage from "./pages/LoginPage";
 import registerPage from './pages/RegisterPage';
+import RecipesListPage from './pages/RecipesListPage';
 
 interface Route {
   element: JSX.Element;
@@ -16,7 +17,8 @@ interface Route {
 
 export default [
   LoginPage,
-  registerPage
+  registerPage,
+  RecipesListPage
 ]
   // map the route property of each page component to a Route
   .map(x => (({ element: createElement(x), ...x.route }) as Route))
