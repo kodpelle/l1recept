@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { getrecipes, type Recipe } from "../services/recipes";
+import { getRecipes, type Recipe } from "../services/recipes";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +12,7 @@ export default function RecipesListPage() {
     useEffect(() => {
         (async () => {
             try {
-                setItems(await getrecipes());
+                setItems(await getRecipes());
             } catch (e) {
                 console.error(e);
             } finally {

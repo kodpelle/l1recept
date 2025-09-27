@@ -8,7 +8,7 @@ export interface Recipe {
     imageUrl?: string;
 }
 
-export async function getrecipes(): Promise<Recipe[]> {
+export async function getRecipes(): Promise<Recipe[]> {
     const res = await fetch('/api/recipes');
     if (!res.ok)
         throw new Error(await res.text());
@@ -54,4 +54,24 @@ export async function getIngredients(): Promise<Ingredient[]> {
     const res = await fetch('/api/ingredients');
     if (!res.ok) throw new Error(await res.text());
     return res.json();
+}
+
+export interface RecipeIngredient {
+    id: number;
+    recipeId: number;
+    ingredientId: number;
+    amount: string;
+}
+
+export async function getRecipeIngredients(): Promise<RecipeIngredient[]> {
+    const r = await fetch("/api/recipe_ingredients");
+    if (!r.ok) throw new Error(await r.text());
+    return r.json();
+}
+
+
+export async function getRecipeById(id: number) {
+    const r = await fetch(`/api/recipes/${id}`);
+    if (!r.ok) throw new Error(await r.text());
+    return r.json();
 }
