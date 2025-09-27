@@ -17,8 +17,13 @@ export default function RecipeDetailPage() {
                 setLoading(true);
                 const r = await getRecipeById(recipeId);
                 setRecipe(r);
-            } catch (e: any) {
-                setErr(e.message ?? "Kunde inte hämta recept");
+            } catch (e) {
+                if (e instanceof Error) {
+                    setErr(e.message);
+                } else {
+                    setErr("Okänt fel inträffade.");
+                }
+
             } finally {
                 setLoading(false);
             }
