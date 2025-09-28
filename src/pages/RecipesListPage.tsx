@@ -1,11 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { getRecipes, type Recipe } from "../services/recipes";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function RecipesListPage() {
-    const [items, setItems] = React.useState<Recipe[]>([]);
-    const [loading, setLoading] = React.useState(true);
+    const [items, setItems] = useState<Recipe[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState("");
     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -23,6 +24,12 @@ export default function RecipesListPage() {
 
     if (loading) return <div>Loading...</div>;
 
+    const filtered = items.filter((r) =>
+        (r.title + " " + (r.description ?? ""))
+            .toLowerCase()
+            .includes(search.toLowerCase())
+    );
+
     return (
         <div className="container py-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -37,11 +44,18 @@ export default function RecipesListPage() {
                 )}
             </div>
 
-            {items.length === 0 ? (
-                <div>No recipes yet.</div>
+            <input
+                className="form-control mb-3"
+                placeholder="Sök recept..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+            />
+
+            {filtered.length === 0 ? (
+                <div>Inga recept matchar sökningen.</div>
             ) : (
                 <ul className="list-group">
-                    {items.map((r) => {
+                    {filtered.map((r) => {
                         const hasImg = !!r.imageUrl && r.imageUrl.trim() !== "";
                         return (
                             <li
@@ -64,9 +78,6 @@ export default function RecipesListPage() {
                                     <div className="fw-semibold">{r.title}</div>
                                     {r.description && (
                                         <div className="text-muted small">{r.description}</div>
-                                    )}
-                                    {r.category && (
-                                        <span className="badge bg-secondary mt-1">{r.category}</span>
                                     )}
                                 </div>
                                 <button
