@@ -73,7 +73,23 @@ export default function RecipeNewPage() {
                 <input className="form-control" placeholder="Titel" value={title} onChange={e => setTitle(e.target.value)} required />
                 <textarea className="form-control" placeholder="Beskrivning" value={description} onChange={e => setDescription(e.target.value)} rows={4} />
                 <input className="form-control" placeholder="Kategori" value={category} onChange={e => setCategory(e.target.value)} />
-                <input className="form-control" placeholder="Bild-URL (valfri)" value={imageUrl} onChange={e => setImageUrl(e.target.value)} />
+                <input
+                    className="form-control"
+                    placeholder="Bild-URL (valfri)"
+                    value={imageUrl}
+                    onChange={e => setImageUrl(e.target.value)}
+                />
+
+                {imageUrl && (
+                    <div className="mt-2">
+                        <img
+                            src={imageUrl}
+                            alt="Förhandsgranskning"
+                            style={{ maxWidth: "200px", borderRadius: "8px" }}
+                            onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
+                        />
+                    </div>
+                )}
 
                 <div className="card p-3">
                     <h5 className="mb-3">Ingredienser</h5>
