@@ -14,7 +14,7 @@ export async function logout() {
 }
 export async function getCurrentUser() {
   const response = await fetch("/api/login");
-  if (!response.ok) return null; 
+  if (!response.ok) return null;
   return response.json();
 }
 

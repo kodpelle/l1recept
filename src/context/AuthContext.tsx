@@ -26,9 +26,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    async function checkLogin(){
+    async function checkLogin() {
       const currentUser = await getCurrentUser();
-      if (currentUser) setUser(currentUser);      
+      if (currentUser) setUser(currentUser);
     }
     checkLogin();
   }, []);
@@ -41,11 +41,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   //funktion för att logga ut en användare, anropar logoutRequest(fetch mot backend) och sätter user state till null
   const logout = async () => {
-  await logoutRequest();
-  setUser(null);
-};
+    await logoutRequest();
+    setUser(null);
+  };
 
-//tillhandahåller kontextvärdena till barnkomponenter
+  //tillhandahåller kontextvärdena till barnkomponenter
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
       {children}

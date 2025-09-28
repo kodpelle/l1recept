@@ -7,25 +7,32 @@ export default function RecipeDetailPage() {
     const recipeId = Number(id);
     const [recipe, setRecipe] = useState<RecipeWithIngredients | null>(null);
     const [loading, setLoading] = useState(true);
-    const [err, setErr] = useState<string | null>(null);
 
     useEffect(() => {
+        const ac = new AbortController();
+
         (async () => {
             try {
-                setErr(null);
                 setLoading(true);
                 const r = await getRecipeWithIngredients(recipeId);
                 setRecipe(r);
             } catch (e: unknown) {
-                setErr(e instanceof Error ? e.message : "Okänt fel inträffade.");
+                if (e instanceof DOMException && e.name === "AbortError") {
+                    return;
+                } else if (e instanceof Error) {
+                    console.error("getRecipeWithIngredients failed", e.message);
+                } else {
+                    console.error("getRecipeWithIngredients failed with unknown error", e);
+                }
             } finally {
                 setLoading(false);
             }
         })();
+
+        return () => ac.abort();
     }, [recipeId]);
 
     if (loading) return <div>Laddar...</div>;
-    if (err) return <div className="error">{err}</div>;
     if (!recipe) return <div>Receptet hittades inte</div>;
 
     const hasImg = !!recipe.imageUrl && recipe.imageUrl.trim() !== "";
