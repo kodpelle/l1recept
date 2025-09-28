@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getRecipeById, type Recipe } from "../services/recipes";
-
+import { getRecipeWithIngredients, type RecipeWithIngredients } from "../services/recipes";
 
 export default function RecipeDetailPage() {
     const { id } = useParams();
     const recipeId = Number(id);
-    const [recipe, setRecipe] = useState<Recipe | null>(null);
+    const [recipe, setRecipe] = useState<RecipeWithIngredients | null>(null);
     const [loading, setLoading] = useState(true);
     const [err, setErr] = useState<string | null>(null);
 
@@ -15,26 +14,22 @@ export default function RecipeDetailPage() {
             try {
                 setErr(null);
                 setLoading(true);
-                const r = await getRecipeById(recipeId);
+                const r = await getRecipeWithIngredients(recipeId);
                 setRecipe(r);
             } catch (e: unknown) {
-                if (e instanceof Error) {
-                    setErr(e.message);
-                } else {
-                    setErr("Okänt fel inträffade.");
-                }
-            }
-            finally {
+                setErr(e instanceof Error ? e.message : "Okänt fel inträffade.");
+            } finally {
                 setLoading(false);
             }
         })();
-
     }, [recipeId]);
+
     if (loading) return <div>Laddar...</div>;
     if (err) return <div className="error">{err}</div>;
     if (!recipe) return <div>Receptet hittades inte</div>;
 
     const hasImg = !!recipe.imageUrl && recipe.imageUrl.trim() !== "";
+
     return (
         <div>
             <Link to="/recipes">Tillbaka till recept</Link>
@@ -42,15 +37,35 @@ export default function RecipeDetailPage() {
             <h2>{recipe.title}</h2>
             {recipe.category && <span>{recipe.category}</span>}
             {recipe.createdAt && (
-                <span>skapad: {new Date(recipe.createdAt).toLocaleString()}</span>
+                <span> · skapad: {new Date(recipe.createdAt).toLocaleString()}</span>
             )}
 
             {hasImg && (
                 <div>
-                    <img src={recipe.imageUrl} alt={recipe.title} style={{ maxWidth: "300px" }} onError={(e) => ((e.target as HTMLImageElement).style.display = "none")} />
+                    <img
+                        src={recipe.imageUrl}
+                        alt={recipe.title}
+                        style={{ maxWidth: "300px" }}
+                        onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
+                    />
                 </div>
             )}
+
             <p>{recipe.description}</p>
+
+            <h3>Ingredienser</h3>
+            {recipe.ingredients.length === 0 ? (
+                <p>Inga ingredienser tillagda ännu.</p>
+            ) : (
+                <ul>
+                    {recipe.ingredients.map((ri) => (
+                        <li key={ri.id}>
+                            <strong>{ri.ingredient.name}</strong>
+                            {ri.ingredient.category ? ` (${ri.ingredient.category})` : ""} – {ri.amount}
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 }
@@ -58,4 +73,4 @@ export default function RecipeDetailPage() {
 RecipeDetailPage.route = {
     path: "/recipes/:id",
     index: 5,
-}
+};
