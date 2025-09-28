@@ -28,7 +28,10 @@ export default function RecipesListPage() {
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h2>Recipes</h2>
                 {!!user && (
-                    <button className="btn btn-primary" onClick={() => navigate("/recipes/new")}>
+                    <button
+                        className="btn btn-primary"
+                        onClick={() => navigate("/recipes/new")}
+                    >
                         Add Recipe
                     </button>
                 )}
@@ -41,19 +44,37 @@ export default function RecipesListPage() {
                     {items.map((r) => {
                         const hasImg = !!r.imageUrl && r.imageUrl.trim() !== "";
                         return (
-                            <li key={r.id} className="list-group-item d-flex gap-3 align-items-start">
+                            <li
+                                key={r.id}
+                                className="list-group-item d-flex gap-3 align-items-center"
+                            >
                                 {hasImg && (
                                     <img
                                         src={r.imageUrl}
                                         alt={r.title}
-                                        style={{ width: 120, height: 80, objectFit: "cover", borderRadius: 8 }}
+                                        style={{
+                                            width: 120,
+                                            height: 80,
+                                            objectFit: "cover",
+                                            borderRadius: 8,
+                                        }}
                                     />
                                 )}
                                 <div className="flex-grow-1">
                                     <div className="fw-semibold">{r.title}</div>
-                                    {r.description && <div className="text-muted small">{r.description}</div>}
-                                    {r.category && <span className="badge bg-secondary mt-1">{r.category}</span>}
+                                    {r.description && (
+                                        <div className="text-muted small">{r.description}</div>
+                                    )}
+                                    {r.category && (
+                                        <span className="badge bg-secondary mt-1">{r.category}</span>
+                                    )}
                                 </div>
+                                <button
+                                    className="btn btn-outline-primary btn-sm"
+                                    onClick={() => navigate(`/recipes/${r.id}`)}
+                                >
+                                    Visa
+                                </button>
                             </li>
                         );
                     })}
@@ -66,8 +87,5 @@ export default function RecipesListPage() {
 RecipesListPage.route = {
     path: "/recipes",
     index: 3,
-    menulabel: "Recipes"
-
-}
-
-
+    menulabel: "Recipes",
+};
