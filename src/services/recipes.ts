@@ -8,6 +8,34 @@ export interface Recipe {
     imageUrl?: string;
 }
 
+export interface Ingredient {
+    id: number;
+    name: string;
+    category?: string;
+}
+
+export interface RecipeIngredientCreate {
+    recipeId: number;
+    ingredientId: number;
+    amount: string;
+}
+
+export interface RecipeIngredient {
+    id: number;
+    recipeId: number;
+    ingredientId: number;
+    amount: string;
+}
+
+export interface RecipeReview {
+    id: number;
+    recipeId: number;
+    userId: number;
+    comment?: string;
+    rating: number;
+    createdAt: string;
+}
+
 export async function getRecipes(): Promise<Recipe[]> {
     const res = await fetch('/api/recipes');
     if (!res.ok)
@@ -28,11 +56,6 @@ export async function createRecipe(
     return { ...data, id: data.insertId ?? data.id };
 }
 
-export interface RecipeIngredientCreate {
-    recipeId: number;
-    ingredientId: number;
-    amount: string;
-}
 
 export async function addRecipeIngredient(data: RecipeIngredientCreate) {
     const res = await fetch('/api/recipe_ingredients', {
@@ -44,23 +67,10 @@ export async function addRecipeIngredient(data: RecipeIngredientCreate) {
     return res.json();
 }
 
-export interface Ingredient {
-    id: number;
-    name: string;
-    category?: string;
-}
-
 export async function getIngredients(): Promise<Ingredient[]> {
     const res = await fetch('/api/ingredients');
     if (!res.ok) throw new Error(await res.text());
     return res.json();
-}
-
-export interface RecipeIngredient {
-    id: number;
-    recipeId: number;
-    ingredientId: number;
-    amount: string;
 }
 
 export async function getRecipeIngredients(): Promise<RecipeIngredient[]> {
@@ -101,4 +111,25 @@ export async function getRecipeWithIngredients(recipeId: number): Promise<Recipe
         }));
 
     return { ...recipe, ingredients: linked };
+}
+
+export async function getReviewsByRecipeId(recipeId: number): Promise<RecipeReview[]> {
+    const res = await fetch(`/api/recipe_reviews?where=recipeId=${recipeId}&orderby=-createdAt`);
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
+export async function createReview(input: {
+    recipeId: number;
+    userId: number;
+    rating: number;
+    comment?: string;
+}): Promise<RecipeReview> {
+    const res = await fetch("/api/recipe_reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
 }
