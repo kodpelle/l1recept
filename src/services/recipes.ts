@@ -75,3 +75,30 @@ export async function getRecipeById(id: number) {
     if (!r.ok) throw new Error(await r.text());
     return r.json();
 }
+
+export type RecipeWithIngredients = Recipe & {
+    ingredients: Array<{
+        id: number;
+        amount: string;
+        ingredient: Ingredient;
+    }>;
+}
+
+export async function getRecipeWithIngredients(recipeId: number): Promise<RecipeWithIngredients> {
+    const [recipe, allIngredients, allRecipeIngredients] = await Promise.all([
+        getRecipeById(recipeId),
+        getIngredients(),
+        getRecipeIngredients()
+    ]);
+
+    const byId = new Map(allIngredients.map(i => [i.id, i]));
+    const linked = allRecipeIngredients
+        .filter(ri => ri.recipeId === recipeId)
+        .map(ri => ({
+            id: ri.id,
+            amount: ri.amount,
+            ingredient: byId.get(ri.ingredientId)!
+        }));
+
+    return { ...recipe, ingredients: linked };
+}
