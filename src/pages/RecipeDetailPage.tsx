@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getRecipeWithIngredients, type RecipeWithIngredients, getReviewsByRecipeId, createReview, type RecipeReview } from "../services/recipes";
 import { useAuth } from "../context/AuthContext";
+import { StarRating } from "../components/StarRating";
 
 export default function RecipeDetailPage() {
     const { id } = useParams();
@@ -127,7 +128,9 @@ export default function RecipeDetailPage() {
                     <div className="mb-3">
                         {avg !== null ? (
                             <span>
-                                Snittbetyg: <strong>{avg} / 5</strong> ({reviews.length} omdömen)
+                                Snittbetyg: <StarRating value={Math.round(avg)} />
+                                <strong>{avg} / 5</strong> ({reviews.length} omdömen)
+
                             </span>
                         ) : (
                             <span>Inga omdömen ännu.</span>
@@ -139,7 +142,7 @@ export default function RecipeDetailPage() {
                             {reviews.map((rv) => (
                                 <li key={rv.id} className="list-group-item">
                                     <div className="d-flex justify-content-between">
-                                        <strong>{rv.rating} / 5</strong>
+                                        <strong><StarRating value={rv.rating} /> ({rv.rating} / 5)</strong>
                                         <small className="text-muted">
                                             {new Date(rv.createdAt).toLocaleString()}
                                         </small>
