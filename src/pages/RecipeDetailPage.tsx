@@ -97,7 +97,7 @@ export default function RecipeDetailPage() {
         <div className="container my-4">
             <div className="col-lg-10 mx-auto">
                 <Link to="/recipes" className="btn btn-outline-secondary mb-3">
-                    ← Tillbaka till recept
+                    ← Tillbaka till alla
                 </Link>
 
                 <div className="row align-items-start mb-4">
