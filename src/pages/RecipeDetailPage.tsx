@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getRecipeWithIngredients, type RecipeWithIngredients, getReviewsByRecipeId, createReview, type RecipeReview, } from "../services/recipes";
+import {
+    getRecipeWithIngredients,
+    type RecipeWithIngredients,
+    getReviewsByRecipeId,
+    createReview,
+    type RecipeReview,
+} from "../services/recipes";
 import { useAuth } from "../context/AuthContext";
 import { StarRating } from "../components/StarRating";
 
@@ -77,38 +83,63 @@ export default function RecipeDetailPage() {
         }
     }
 
-    if (loading) return <div>Laddar...</div>;
-    if (!recipe) return <div>Receptet hittades inte</div>;
+    if (loading) return <div className="container my-4">Laddar...</div>;
+    if (!recipe) return <div className="container my-4">Receptet hittades inte</div>;
 
     const hasImg = !!recipe.imageUrl && recipe.imageUrl.trim() !== "";
 
+    const [shortDesc, ...steps] = (recipe.description ?? "")
+        .split(/\r?\n/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+
     return (
-        <div>
-            <Link to="/recipes">Tillbaka till recept</Link>
+        <div className="container my-4">
+            <div className="col-lg-10 mx-auto">
+                <Link to="/recipes" className="btn btn-link mb-3">
+                    ← Tillbaka till recept
+                </Link>
 
-            <h2>{recipe.title}</h2>
-            {recipe.createdAt && <span> · skapad: {new Date(recipe.createdAt).toLocaleString()}</span>}
-
-            {hasImg && (
-                <div className="my-2">
-                    <img
-                        src={recipe.imageUrl}
-                        alt={recipe.title}
-                        style={{ maxWidth: "300px", borderRadius: 8 }}
-                        onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
-                    />
+                <div className="row align-items-start mb-4">
+                    <div className="col-md-6 text-center">
+                        {hasImg && (
+                            <img
+                                src={recipe.imageUrl}
+                                alt={recipe.title}
+                                className="img-fluid rounded mb-3"
+                                style={{ maxHeight: 400, objectFit: "cover", width: "100%" }}
+                                onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
+                            />
+                        )}
+                    </div>
+                    <div className="col-md-6">
+                        <h2 className="mb-1">{recipe.title}</h2>
+                        {recipe.createdAt && (
+                            <p className="text-muted mb-3">
+                                skapad: {new Date(recipe.createdAt).toLocaleString()}
+                            </p>
+                        )}
+                        {shortDesc && <p className="lead">{shortDesc}</p>}
+                    </div>
                 </div>
-            )}
 
-            {recipe.description && (() => {
-                const [shortDesc, ...steps] = recipe.description
-                    .split(/\r?\n/)
-                    .map((s) => s.trim())
-                    .filter(Boolean);
+                <div className="row mb-4">
+                    <div className="col-md-6">
+                        <h3>Ingredienser</h3>
+                        {recipe.ingredients.length === 0 ? (
+                            <p>Inga ingredienser tillagda ännu.</p>
+                        ) : (
+                            <ul className="list-group">
+                                {recipe.ingredients.map((ri) => (
+                                    <li key={ri.id} className="list-group-item">
+                                        <strong>{ri.ingredient.name}</strong> – {ri.amount}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
 
-                return (
-                    <div className="mb-3">
-                        {shortDesc && <p><em>{shortDesc}</em></p>}
+                    <div className="col-md-6">
                         {steps.length > 0 && (
                             <>
                                 <h3>Instruktioner</h3>
@@ -120,98 +151,86 @@ export default function RecipeDetailPage() {
                             </>
                         )}
                     </div>
-                );
-            })()}
+                </div>
+                <hr className="my-4" />
+                <h3>Betyg & kommentarer</h3>
 
-            <h3>Ingredienser</h3>
-            {recipe.ingredients.length === 0 ? (
-                <p>Inga ingredienser tillagda ännu.</p>
-            ) : (
-                <ul>
-                    {recipe.ingredients.map((ri) => (
-                        <li key={ri.id}>
-                            <strong>{ri.ingredient.name}</strong> – {ri.amount}
-                        </li>
-                    ))}
-                </ul>
-            )}
+                {revLoading ? (
+                    <div>Laddar recensioner…</div>
+                ) : revErr ? (
+                    <div className="text-danger">{revErr}</div>
+                ) : (
+                    <>
+                        <div className="mb-3">
+                            {avg !== null ? (
+                                <span>
+                                    Snittbetyg: <StarRating value={Math.round(avg)} />{" "}
+                                    <strong>{avg} / 5</strong> ({reviews.length} omdömen)
+                                </span>
+                            ) : (
+                                <span>Inga omdömen ännu.</span>
+                            )}
+                        </div>
 
-            <hr className="my-4" />
-            <h3>Betyg & kommentarer</h3>
-
-            {revLoading ? (
-                <div>Laddar recensioner…</div>
-            ) : revErr ? (
-                <div className="text-danger">{revErr}</div>
-            ) : (
-                <>
-                    <div className="mb-3">
-                        {avg !== null ? (
-                            <span>
-                                Snittbetyg: <StarRating value={Math.round(avg)} />{" "}
-                                <strong>{avg} / 5</strong> ({reviews.length} omdömen)
-                            </span>
-                        ) : (
-                            <span>Inga omdömen ännu.</span>
+                        {reviews.length > 0 && (
+                            <div className="mb-4">
+                                <ul className="list-group">
+                                    {reviews.map((rv) => (
+                                        <li key={rv.id} className="list-group-item">
+                                            <div className="d-flex justify-content-between">
+                                                <strong>
+                                                    <StarRating value={rv.rating} /> ({rv.rating} / 5)
+                                                </strong>
+                                                <small className="text-muted">
+                                                    {new Date(rv.createdAt).toLocaleString()}
+                                                </small>
+                                            </div>
+                                            {rv.comment && <div className="mt-1">{rv.comment}</div>}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         )}
-                    </div>
 
-                    {reviews.length > 0 && (
-                        <ul className="list-group mb-4">
-                            {reviews.map((rv) => (
-                                <li key={rv.id} className="list-group-item">
-                                    <div className="d-flex justify-content-between">
-                                        <strong>
-                                            <StarRating value={rv.rating} /> ({rv.rating} / 5)
-                                        </strong>
-                                        <small className="text-muted">
-                                            {new Date(rv.createdAt).toLocaleString()}
-                                        </small>
+                        <div className="card p-3 mb-5">
+                            <h5 className="mb-3">Lämna ett omdöme</h5>
+                            {!user ? (
+                                <div className="text-muted">Logga in för att lämna omdöme.</div>
+                            ) : (
+                                <form onSubmit={submitReview} className="d-flex flex-column gap-2">
+                                    <div className="d-flex align-items-center gap-2">
+                                        <label className="form-label m-0">Betyg</label>
+                                        <select
+                                            className="form-select"
+                                            style={{ maxWidth: 100 }}
+                                            value={myRating}
+                                            onChange={(e) => setMyRating(Number(e.target.value))}
+                                        >
+                                            {[5, 4, 3, 2, 1].map((n) => (
+                                                <option key={n} value={n}>
+                                                    {n}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
-                                    {rv.comment && <div className="mt-1">{rv.comment}</div>}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-
-                    <div className="card p-3">
-                        <h5 className="mb-3">Lämna ett omdöme</h5>
-                        {!user ? (
-                            <div className="text-muted">Logga in för att lämna omdöme.</div>
-                        ) : (
-                            <form onSubmit={submitReview} className="d-flex flex-column gap-2">
-                                <div className="d-flex align-items-center gap-2">
-                                    <label className="form-label m-0">Betyg</label>
-                                    <select
-                                        className="form-select"
-                                        style={{ maxWidth: 100 }}
-                                        value={myRating}
-                                        onChange={(e) => setMyRating(Number(e.target.value))}
-                                    >
-                                        {[5, 4, 3, 2, 1].map((n) => (
-                                            <option key={n} value={n}>
-                                                {n}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <textarea
-                                    className="form-control"
-                                    placeholder="Skriv en kommentar (valfritt)"
-                                    rows={3}
-                                    value={myComment}
-                                    onChange={(e) => setMyComment(e.target.value)}
-                                />
-                                <div>
-                                    <button className="btn btn-primary" type="submit">
-                                        Skicka
-                                    </button>
-                                </div>
-                            </form>
-                        )}
-                    </div>
-                </>
-            )}
+                                    <textarea
+                                        className="form-control"
+                                        placeholder="Skriv en kommentar (valfritt)"
+                                        rows={3}
+                                        value={myComment}
+                                        onChange={(e) => setMyComment(e.target.value)}
+                                    />
+                                    <div>
+                                        <button className="btn btn-primary" type="submit">
+                                            Skicka
+                                        </button>
+                                    </div>
+                                </form>
+                            )}
+                        </div>
+                    </>
+                )}
+            </div>
         </div>
     );
 }
