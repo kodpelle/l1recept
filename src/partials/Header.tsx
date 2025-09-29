@@ -1,4 +1,5 @@
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useAuth } from "../context/AuthContext";
 
@@ -8,7 +9,7 @@ export default function Header() {
   return (
     <Navbar bg="dark" variant="dark" expand="sm">
       <Container>
-        <Navbar.Brand href="/">Lätt Recept</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/">Lätt Recept</Navbar.Brand>
 
 
         <Nav className="ms-auto">
