@@ -13,6 +13,12 @@ export default function RecipesListPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
 
+    function firstLine(text?: string, max = 90) {
+        if (!text) return "";
+        const line = text.split(/\r?\n/)[0].trim();
+        return line.length > max ? line.slice(0, max) + "…" : line;
+    }
+
     useEffect(() => {
         (async () => {
             try {
@@ -104,11 +110,7 @@ export default function RecipesListPage() {
                                             </div>
                                         )}
                                         {r.description && (
-                                            <p className="card-text text-muted">
-                                                {r.description.length > 90
-                                                    ? r.description.slice(0, 90) + "…"
-                                                    : r.description}
-                                            </p>
+                                            <p className="card-text text-muted">{firstLine(r.description)}</p>
                                         )}
                                         <button
                                             className="btn btn-sm btn-outline-primary mt-auto"
