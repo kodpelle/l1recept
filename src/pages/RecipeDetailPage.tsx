@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getRecipeWithIngredients, type RecipeWithIngredients, getReviewsByRecipeId, createReview, type RecipeReview } from "../services/recipes";
+import { getRecipeWithIngredients, type RecipeWithIngredients, getReviewsByRecipeId, createReview, type RecipeReview, } from "../services/recipes";
 import { useAuth } from "../context/AuthContext";
 import { StarRating } from "../components/StarRating";
 
@@ -33,7 +33,6 @@ export default function RecipeDetailPage() {
             }
         })();
     }, [recipeId]);
-
 
     useEffect(() => {
         (async () => {
@@ -101,7 +100,28 @@ export default function RecipeDetailPage() {
                 </div>
             )}
 
-            {recipe.description && <p>{recipe.description}</p>}
+            {recipe.description && (() => {
+                const [shortDesc, ...steps] = recipe.description
+                    .split(/\r?\n/)
+                    .map((s) => s.trim())
+                    .filter(Boolean);
+
+                return (
+                    <div className="mb-3">
+                        {shortDesc && <p><em>{shortDesc}</em></p>}
+                        {steps.length > 0 && (
+                            <>
+                                <h3>Instruktioner</h3>
+                                <ol>
+                                    {steps.map((step, i) => (
+                                        <li key={i}>{step}</li>
+                                    ))}
+                                </ol>
+                            </>
+                        )}
+                    </div>
+                );
+            })()}
 
             <h3>Ingredienser</h3>
             {recipe.ingredients.length === 0 ? (
@@ -128,9 +148,8 @@ export default function RecipeDetailPage() {
                     <div className="mb-3">
                         {avg !== null ? (
                             <span>
-                                Snittbetyg: <StarRating value={Math.round(avg)} />
+                                Snittbetyg: <StarRating value={Math.round(avg)} />{" "}
                                 <strong>{avg} / 5</strong> ({reviews.length} omdömen)
-
                             </span>
                         ) : (
                             <span>Inga omdömen ännu.</span>
@@ -142,7 +161,9 @@ export default function RecipeDetailPage() {
                             {reviews.map((rv) => (
                                 <li key={rv.id} className="list-group-item">
                                     <div className="d-flex justify-content-between">
-                                        <strong><StarRating value={rv.rating} /> ({rv.rating} / 5)</strong>
+                                        <strong>
+                                            <StarRating value={rv.rating} /> ({rv.rating} / 5)
+                                        </strong>
                                         <small className="text-muted">
                                             {new Date(rv.createdAt).toLocaleString()}
                                         </small>
@@ -168,7 +189,9 @@ export default function RecipeDetailPage() {
                                         onChange={(e) => setMyRating(Number(e.target.value))}
                                     >
                                         {[5, 4, 3, 2, 1].map((n) => (
-                                            <option key={n} value={n}>{n}</option>
+                                            <option key={n} value={n}>
+                                                {n}
+                                            </option>
                                         ))}
                                     </select>
                                 </div>
@@ -180,7 +203,9 @@ export default function RecipeDetailPage() {
                                     onChange={(e) => setMyComment(e.target.value)}
                                 />
                                 <div>
-                                    <button className="btn btn-primary" type="submit">Skicka</button>
+                                    <button className="btn btn-primary" type="submit">
+                                        Skicka
+                                    </button>
                                 </div>
                             </form>
                         )}
