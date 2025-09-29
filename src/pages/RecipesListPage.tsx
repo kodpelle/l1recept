@@ -2,13 +2,22 @@ import React, { useEffect, useState } from "react";
 import { getRecipes, type Recipe } from "../services/recipes";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { getReviewsByRecipeId } from "../services/recipes";
+import { StarRating } from "../components/StarRating";
 
 export default function RecipesListPage() {
     const [items, setItems] = useState<Recipe[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
+    const [ratings, setRatings] = useState<Record<number, number>>({});
     const { user } = useAuth();
     const navigate = useNavigate();
+
+    function firstLine(text?: string, max = 90) {
+        if (!text) return "";
+        const line = text.split(/\r?\n/)[0].trim();
+        return line.length > max ? line.slice(0, max) + "…" : line;
+    }
 
     useEffect(() => {
         (async () => {
@@ -21,6 +30,27 @@ export default function RecipesListPage() {
             }
         })();
     }, []);
+
+    useEffect(() => {
+        if (items.length === 0) return;
+
+        (async () => {
+            const newRatings: Record<number, number> = {};
+            for (const r of items) {
+                try {
+                    const reviews = await getReviewsByRecipeId(r.id);
+                    if (reviews.length > 0) {
+                        const avg = reviews.reduce((a, b) => a + b.rating, 0) / reviews.length;
+                        newRatings[r.id] = avg;
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch reviews for recipe", r.id, e);
+                }
+            }
+            setRatings(newRatings);
+        })();
+    }, [items]);
+
 
     if (loading) return <div>Loading...</div>;
 
@@ -54,42 +84,46 @@ export default function RecipesListPage() {
             {filtered.length === 0 ? (
                 <div>Inga recept matchar sökningen.</div>
             ) : (
-                <ul className="list-group">
+                <div className="row g-3">
                     {filtered.map((r) => {
                         const hasImg = !!r.imageUrl && r.imageUrl.trim() !== "";
                         return (
-                            <li
-                                key={r.id}
-                                className="list-group-item d-flex gap-3 align-items-center"
-                            >
-                                {hasImg && (
-                                    <img
-                                        src={r.imageUrl}
-                                        alt={r.title}
-                                        style={{
-                                            width: 120,
-                                            height: 80,
-                                            objectFit: "cover",
-                                            borderRadius: 8,
-                                        }}
-                                    />
-                                )}
-                                <div className="flex-grow-1">
-                                    <div className="fw-semibold">{r.title}</div>
-                                    {r.description && (
-                                        <div className="text-muted small">{r.description}</div>
+                            <div key={r.id} className="col-12 col-md-6 col-lg-4">
+                                <div className="card h-100">
+                                    {hasImg && (
+                                        <img
+                                            src={r.imageUrl}
+                                            alt={r.title}
+                                            className="card-img-top"
+                                            style={{ height: 160, objectFit: "cover" }}
+                                            onError={(e) =>
+                                                ((e.target as HTMLImageElement).style.display = "none")
+                                            }
+                                        />
                                     )}
+                                    <div className="card-body d-flex flex-column">
+                                        <h5 className="card-title">{r.title}</h5>
+                                        {ratings[r.id] !== undefined && (
+                                            <div className="mb-2 text-warning">
+                                                <StarRating value={Math.round(ratings[r.id])} />{" "}
+                                                <small className="text-muted">({ratings[r.id].toFixed(1)})</small>
+                                            </div>
+                                        )}
+                                        {r.description && (
+                                            <p className="card-text text-muted">{firstLine(r.description)}</p>
+                                        )}
+                                        <button
+                                            className="btn btn-sm btn-outline-primary mt-auto"
+                                            onClick={() => navigate(`/recipes/${r.id}`)}
+                                        >
+                                            Visa recept
+                                        </button>
+                                    </div>
                                 </div>
-                                <button
-                                    className="btn btn-outline-primary btn-sm"
-                                    onClick={() => navigate(`/recipes/${r.id}`)}
-                                >
-                                    Visa
-                                </button>
-                            </li>
+                            </div>
                         );
                     })}
-                </ul>
+                </div>
             )}
         </div>
     );

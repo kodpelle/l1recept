@@ -11,9 +11,9 @@ export default function RecipeNewPage() {
     const navigate = useNavigate();
 
     const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [category, setCategory] = useState("");
     const [imageUrl, setImageUrl] = useState("");
+    const [shortDesc, setShortDesc] = useState("");
+    const [instructions, setInstructions] = useState("");
 
     const [allIngs, setAllIngs] = useState<Ingredient[]>([]);
     const [selected, setSelected] = useState<
@@ -51,11 +51,24 @@ export default function RecipeNewPage() {
         if (!user) { alert("Du måste vara inloggad."); return; }
 
         try {
-            const created = await createRecipe({ title, description, category, imageUrl, userId: user.id });
+            const combinedDesc = shortDesc + "\n" + instructions;
+
+            const created = await createRecipe({
+                title,
+                description: combinedDesc,
+                imageUrl,
+                userId: user.id,
+            });
+
             const recipeId = created.id;
+
             for (const s of selected) {
                 const amount = s.qty ? `${s.qty} ${s.unit}` : s.unit;
-                await addRecipeIngredient({ recipeId, ingredientId: s.ingredientId, amount });
+                await addRecipeIngredient({
+                    recipeId,
+                    ingredientId: s.ingredientId,
+                    amount
+                });
             }
 
             navigate(`/recipes/${recipeId}`);
@@ -71,8 +84,22 @@ export default function RecipeNewPage() {
             <h2>Nytt recept</h2>
             <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
                 <input className="form-control" placeholder="Titel" value={title} onChange={e => setTitle(e.target.value)} required />
-                <textarea className="form-control" placeholder="Beskrivning" value={description} onChange={e => setDescription(e.target.value)} rows={4} />
-                <input className="form-control" placeholder="Kategori" value={category} onChange={e => setCategory(e.target.value)} />
+                <input
+                    className="form-control"
+                    placeholder="Kort beskrivning"
+                    value={shortDesc}
+                    onChange={(e) => setShortDesc(e.target.value)}
+                    required
+                />
+
+                <textarea
+                    className="form-control"
+                    placeholder="Instruktioner"
+                    value={instructions}
+                    onChange={(e) => setInstructions(e.target.value)}
+                    rows={4}
+                />
+
                 <input
                     className="form-control"
                     placeholder="Bild-URL (valfri)"
