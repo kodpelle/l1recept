@@ -64,6 +64,9 @@ export default function HomePage() {
                     })}
                 </div>
             )}
+            <Link to="/recipes" className="btn btn-outline-secondary mb-3 mt-3 align-self-center">
+                Se alla recept →
+            </Link>
         </div>
     );
 }
