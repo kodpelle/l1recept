@@ -86,7 +86,7 @@ export default function RecipeNewPage() {
                 <input className="form-control" placeholder="Titel" value={title} onChange={e => setTitle(e.target.value)} required />
                 <input
                     className="form-control"
-                    placeholder="Kort beskrivning (visas i listan)"
+                    placeholder="Kort beskrivning"
                     value={shortDesc}
                     onChange={(e) => setShortDesc(e.target.value)}
                     required
@@ -94,7 +94,7 @@ export default function RecipeNewPage() {
 
                 <textarea
                     className="form-control"
-                    placeholder="Instruktioner (visas på receptsidan)"
+                    placeholder="Instruktioner"
                     value={instructions}
                     onChange={(e) => setInstructions(e.target.value)}
                     rows={4}
