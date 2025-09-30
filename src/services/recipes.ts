@@ -133,3 +133,10 @@ export async function createReview(input: {
     if (!res.ok) throw new Error(await res.text());
     return res.json();
 }
+
+export async function deleteRecipe(id: number): Promise<void> {
+    const res = await fetch(`/api/recipes/${id}`, {
+        method: "DELETE",
+    });
+    if (!res.ok) throw new Error(await res.text());
+}
