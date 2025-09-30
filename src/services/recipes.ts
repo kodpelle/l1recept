@@ -35,6 +35,14 @@ export interface RecipeReview {
     rating: number;
     createdAt: string;
 }
+export interface PendingIngredient {
+    id: number;
+    name: string;
+    category?: string;
+    createdAt: string;
+    userId?: number;
+}
+
 
 export async function getRecipes(): Promise<Recipe[]> {
     const res = await fetch('/api/recipes');
@@ -172,4 +180,19 @@ export async function deleteRecipeCascade(recipeId: number): Promise<void> {
 
 
     await deleteRecipe(recipeId);
+}
+
+export async function createPendingIngredient(input: {
+    name: string;
+    category?: string;
+    note?: string;
+    userId?: number;
+}): Promise<PendingIngredient> {
+    const res = await fetch("/api/pending_ingredients", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
 }
