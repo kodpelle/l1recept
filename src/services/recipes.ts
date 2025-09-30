@@ -185,7 +185,6 @@ export async function deleteRecipeCascade(recipeId: number): Promise<void> {
 export async function createPendingIngredient(input: {
     name: string;
     category?: string;
-    note?: string;
     userId?: number;
 }): Promise<PendingIngredient> {
     const res = await fetch("/api/pending_ingredients", {
