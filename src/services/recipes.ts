@@ -40,7 +40,6 @@ export interface PendingIngredient {
     name: string;
     category?: string;
     createdAt: string;
-    userId?: number;
 }
 
 
@@ -207,12 +206,16 @@ export async function deletePendingIngredientById(id: number): Promise<void> {
     if (!res.ok) throw new Error(await res.text());
 }
 
-export async function approvePendingIngredient(p: PendingIngredient): Promise<void> {
-    const res = await fetch('/api/ingredients', {
+export async function approvePendingIngredient(
+    p: PendingIngredient,
+    category: string
+): Promise<void> {
+    const res = await fetch("/api/ingredients", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: p.name, category: p.category }),
+        body: JSON.stringify({ name: p.name, category }),
     });
     if (!res.ok) throw new Error(await res.text());
     await deletePendingIngredientById(p.id);
 }
+
