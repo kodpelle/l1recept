@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
     getRecipeWithIngredients,
     type RecipeWithIngredients,
     getReviewsByRecipeId,
     createReview,
     type RecipeReview,
+    deleteRecipe
 } from "../services/recipes";
 import { useAuth } from "../context/AuthContext";
 import { StarRating } from "../components/StarRating";
@@ -24,6 +25,7 @@ export default function RecipeDetailPage() {
 
     const [myRating, setMyRating] = useState<number>(5);
     const [myComment, setMyComment] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         (async () => {
@@ -80,6 +82,18 @@ export default function RecipeDetailPage() {
         } catch (err) {
             console.error(err);
             alert("Kunde inte spara din recension.");
+        }
+    }
+
+    async function handleDelete() {
+        if (!window.confirm("Är du säker på att du vill ta bort detta recept?")) return;
+        try {
+            await deleteRecipe(recipeId);
+            navigate("/recipes");
+        }
+        catch (err) {
+            console.error(err);
+            alert("Kunde inte ta bort receptet.");
         }
     }
 
