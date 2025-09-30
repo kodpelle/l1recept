@@ -140,3 +140,36 @@ export async function deleteRecipe(id: number): Promise<void> {
     });
     if (!res.ok) throw new Error(await res.text());
 }
+export async function getRecipeIngredientsByRecipeId(recipeId: number) {
+    const res = await fetch(`/api/recipe_ingredients?where=recipeId=${recipeId}`);
+    if (!res.ok) throw new Error(await res.text());
+    return res.json() as Promise<Array<{ id: number }>>;
+}
+
+export async function deleteRecipeIngredientById(id: number): Promise<void> {
+    const res = await fetch(`/api/recipe_ingredients/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error(await res.text());
+}
+
+export async function deleteReviewById(id: number): Promise<void> {
+    const res = await fetch(`/api/recipe_reviews/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error(await res.text());
+}
+
+
+export async function deleteRecipeCascade(recipeId: number): Promise<void> {
+
+    const [links, reviews] = await Promise.all([
+        getRecipeIngredientsByRecipeId(recipeId),
+        getReviewsByRecipeId(recipeId),
+    ]);
+
+
+    await Promise.all([
+        ...links.map(l => deleteRecipeIngredientById(l.id)),
+        ...reviews.map(r => deleteReviewById(r.id)),
+    ]);
+
+
+    await deleteRecipe(recipeId);
+}
