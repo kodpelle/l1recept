@@ -203,3 +203,7 @@ export async function getPendingIngredients(): Promise<PendingIngredient[]> {
     return res.json();
 }
 
+export async function deletePendingIngredientById(id: number): Promise<void> {
+    const res = await fetch(`/api/pending_ingredients/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error(await res.text());
+}
