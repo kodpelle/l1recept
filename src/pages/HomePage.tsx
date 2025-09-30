@@ -22,9 +22,21 @@ export default function HomePage() {
 
     return (
         <div className="container py-4">
-            <h1 className="display-3 text-center mb-4">L1Recept</h1>
+            <h1
+                className="display-1 fw-bold text-center mb-4"
+                style={{
+                    background: "linear-gradient(90deg, #ff7e5f, #feb47b)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent"
+                }}
+            >
+                L1Recept
+            </h1>
+            <p className="lead text-center text-muted mb-4">
+                Enkla recept att laga, spara och dela med andra
+            </p>
 
-            <h4 className="mb-3">Senaste recept</h4>
+            <h2 className="mb-3">Senaste recept</h2>
             {loading ? (
                 <div>Laddar…</div>
             ) : items.length === 0 ? (
@@ -54,7 +66,7 @@ export default function HomePage() {
                                     <h6 className="card-title text-truncate">{r.title}</h6>
                                     <Link
                                         to={`/recipes/${r.id}`}
-                                        className="btn btn-sm btn-outline-primary"
+                                        className="btn btn-primary btn-sm"
                                     >
                                         Visa
                                     </Link>
@@ -64,8 +76,8 @@ export default function HomePage() {
                     })}
                 </div>
             )}
-            <Link to="/recipes" className="btn btn-outline-secondary mb-3 mt-3 align-self-center">
-                Se alla recept →
+            <Link to="/recipes" className="btn btn-primary mt-4">
+                Se alla recept
             </Link>
         </div>
     );
