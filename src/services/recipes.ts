@@ -196,3 +196,10 @@ export async function createPendingIngredient(input: {
     if (!res.ok) throw new Error(await res.text());
     return res.json();
 }
+
+export async function getPendingIngredients(): Promise<PendingIngredient[]> {
+    const res = await fetch('/api/pending_ingredients?orderby=-createdAt');
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
