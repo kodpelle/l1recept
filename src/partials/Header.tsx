@@ -7,12 +7,12 @@ export default function Header() {
   const { user, logout } = useAuth();
 
   return (
-    <Navbar bg="dark" variant="dark" expand="sm">
-      <Container>
+    <Navbar expand="sm" sticky="top"
+      style={{ backgroundColor: "#8fc6ebff" }}
+      variant="dark">
+      <Container fluid className="px-3">
         <Navbar.Brand as={Link} to="/">Lätt Recept</Navbar.Brand>
-
-
-        <Nav className="ms-auto">
+        <Nav className="ms-auto d-flex align-items-center">
           {user ? (
             <>
               <Navbar.Text className="me-3">
@@ -23,7 +23,7 @@ export default function Header() {
               </Button>
             </>
           ) : (
-            <Nav.Link href="/login">Logga in</Nav.Link>
+            <Nav.Link as={Link} to="/login">Logga in</Nav.Link>
           )}
         </Nav>
       </Container>
