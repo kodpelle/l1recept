@@ -1,0 +1,22 @@
+export const INGREDIENT_CATEGORIES = [
+    "Grönsaker",
+    "Frukt",
+    "Kött",
+    "Fisk",
+    "Skaldjur",
+    "Mejeri",
+    "Ägg",
+    "Spannmål",
+    "Bakning",
+    "Pantry",
+    "Kryddor",
+    "Örter",
+    "Fett",
+    "Nötter",
+    "Baljväxter",
+    "Svamp",
+    "Sötningsmedel",
+    "Dryck",
+    "Övrigt",
+] as const;
+export type IngredientCategory = typeof INGREDIENT_CATEGORIES[number];

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
     getRecipeWithIngredients,
     type RecipeWithIngredients,
     getReviewsByRecipeId,
     createReview,
     type RecipeReview,
+    deleteRecipeCascade
 } from "../services/recipes";
 import { useAuth } from "../context/AuthContext";
 import { StarRating } from "../components/StarRating";
@@ -24,6 +25,7 @@ export default function RecipeDetailPage() {
 
     const [myRating, setMyRating] = useState<number>(5);
     const [myComment, setMyComment] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         (async () => {
@@ -83,6 +85,17 @@ export default function RecipeDetailPage() {
         }
     }
 
+    async function handleDelete() {
+        if (!window.confirm("Är du säker på att du vill ta bort detta recept?")) return;
+        try {
+            await deleteRecipeCascade(recipeId);
+            navigate("/recipes");
+        } catch (err) {
+            console.error(err);
+            alert("Kunde inte ta bort receptet.");
+        }
+    }
+
     if (loading) return <div className="container my-4">Laddar...</div>;
     if (!recipe) return <div className="container my-4">Receptet hittades inte</div>;
 
@@ -95,10 +108,14 @@ export default function RecipeDetailPage() {
 
     return (
         <div className="container my-4">
+
             <div className="col-lg-10 mx-auto">
-                <Link to="/recipes" className="btn btn-primary mb-3">
+
+                <Link to="/recipes" className="btn btn-primary mb-3 me-3">
                     ← Tillbaka till alla
                 </Link>
+                {user?.role === "admin" && (
+                    <button className="btn btn-danger mb-3" onClick={handleDelete}>Ta bort recept</button>)}
 
                 <div className="row align-items-start mb-4">
                     <div className="col-md-6 text-center">

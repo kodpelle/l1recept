@@ -35,6 +35,13 @@ export interface RecipeReview {
     rating: number;
     createdAt: string;
 }
+export interface PendingIngredient {
+    id: number;
+    name: string;
+    category?: string;
+    createdAt: string;
+}
+
 
 export async function getRecipes(): Promise<Recipe[]> {
     const res = await fetch('/api/recipes');
@@ -133,3 +140,81 @@ export async function createReview(input: {
     if (!res.ok) throw new Error(await res.text());
     return res.json();
 }
+
+export async function deleteRecipe(id: number): Promise<void> {
+    const res = await fetch(`/api/recipes/${id}`, {
+        method: "DELETE",
+    });
+    if (!res.ok) throw new Error(await res.text());
+}
+export async function getRecipeIngredientsByRecipeId(recipeId: number) {
+    const res = await fetch(`/api/recipe_ingredients?where=recipeId=${recipeId}`);
+    if (!res.ok) throw new Error(await res.text());
+    return res.json() as Promise<Array<{ id: number }>>;
+}
+
+export async function deleteRecipeIngredientById(id: number): Promise<void> {
+    const res = await fetch(`/api/recipe_ingredients/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error(await res.text());
+}
+
+export async function deleteReviewById(id: number): Promise<void> {
+    const res = await fetch(`/api/recipe_reviews/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error(await res.text());
+}
+
+
+export async function deleteRecipeCascade(recipeId: number): Promise<void> {
+
+    const [links, reviews] = await Promise.all([
+        getRecipeIngredientsByRecipeId(recipeId),
+        getReviewsByRecipeId(recipeId),
+    ]);
+
+
+    await Promise.all([
+        ...links.map(l => deleteRecipeIngredientById(l.id)),
+        ...reviews.map(r => deleteReviewById(r.id)),
+    ]);
+
+
+    await deleteRecipe(recipeId);
+}
+
+export async function createPendingIngredient(input: {
+    name: string;
+    userId?: number;
+}): Promise<PendingIngredient> {
+    const res = await fetch("/api/pending_ingredients", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
+export async function getPendingIngredients(): Promise<PendingIngredient[]> {
+    const res = await fetch('/api/pending_ingredients?orderby=-createdAt');
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
+export async function deletePendingIngredientById(id: number): Promise<void> {
+    const res = await fetch(`/api/pending_ingredients/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error(await res.text());
+}
+
+export async function approvePendingIngredient(
+    p: PendingIngredient,
+    category: string
+): Promise<void> {
+    const res = await fetch("/api/ingredients", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: p.name, category }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    await deletePendingIngredientById(p.id);
+}
+
