@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { createRecipe, getIngredients, addRecipeIngredient, type Ingredient } from "../services/recipes";
+import { createRecipe, getIngredients, addRecipeIngredient, type Ingredient, createPendingIngredient } from "../services/recipes";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { UNITS, type Unit } from "../constants/units";
@@ -20,12 +20,33 @@ export default function RecipeNewPage() {
         { ingredientId: number; name: string; qty: string; unit: string }[]
     >([]);
 
-
-
-
     const [pickIngId, setPickIngId] = useState<number | "">("");
     const [pickQty, setPickQty] = useState("");
     const [pickUnit, setPickUnit] = useState<Unit>(UNITS[0]);
+
+    const [showSuggest, setShowSuggest] = useState(false);
+    const [newIngName, setNewIngName] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+
+    async function submitSuggestion(e: React.FormEvent) {
+        e.preventDefault();
+        const name = newIngName.trim();
+        if (!name) return;
+        try {
+            setSubmitting(true);
+            await createPendingIngredient({
+                name
+            });
+            setNewIngName("");
+            setShowSuggest(false);
+            alert("Tack! Förslaget har skickats in för granskning.");
+        } catch (err) {
+            console.error(err);
+            alert("Kunde inte skicka in förslaget.");
+        } finally {
+            setSubmitting(false);
+        }
+    }
 
     useEffect(() => {
         getIngredients().then(setAllIngs).catch(console.error);
@@ -51,7 +72,7 @@ export default function RecipeNewPage() {
         if (!user) { alert("Du måste vara inloggad."); return; }
 
         try {
-            const combinedDesc = shortDesc + "\n" + instructions;
+            const combinedDesc = shortDesc.trim() + (instructions.trim() ? "\n" + instructions.trim() : "");
 
             const created = await createRecipe({
                 title,
@@ -119,6 +140,49 @@ export default function RecipeNewPage() {
                 )}
 
                 <div className="card p-3">
+                    <div className="mt-2">
+                        <button
+                            type="button"
+                            className="btn btn-link p-0"
+                            onClick={() => setShowSuggest(v => !v)}
+                        >
+                            Saknas din ingrediens? Lägg till förslag
+                        </button>
+
+                        {showSuggest && (
+                            <div className="card card-body mt-2">
+                                <div className="row g-2">
+                                    <div className="col-md-6">
+                                        <input
+                                            className="form-control"
+                                            placeholder="Ingrediensnamn *"
+                                            value={newIngName}
+                                            onChange={(e) => setNewIngName(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="mt-2 d-flex gap-2">
+                                    <button
+                                        className="btn btn-primary btn-sm"
+                                        type="button"
+                                        onClick={submitSuggestion}
+                                        disabled={submitting}
+                                    >
+                                        {submitting ? "Skickar…" : "Skicka förslag"}
+                                    </button>
+                                    <button
+                                        className="btn btn-outline-secondary btn-sm"
+                                        type="button"
+                                        onClick={() => setShowSuggest(false)}
+                                        disabled={submitting}
+                                    >
+                                        Avbryt
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                     <h5 className="mb-3">Ingredienser</h5>
                     <div className="d-flex gap-2 align-items-center">
                         <select
