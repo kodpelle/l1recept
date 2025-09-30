@@ -36,10 +36,10 @@ function registerPage() {
                         <Card.Body>
                             <form onSubmit={handleSubmit}>
                                 <Form.Group className="mb-3" controlId="formFirstName">
-                                    <Form.Label>First Name</Form.Label>
+                                    <Form.Label>Förnamn</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter first name"
+                                        placeholder="Ange förnamn"
                                         value={firstName}
                                         onChange={(e) => setFirstName(e.target.value)}
                                         required
@@ -47,10 +47,10 @@ function registerPage() {
                                 </Form.Group>
 
                                 <Form.Group className="mb-3" controlId="formLastName">
-                                    <Form.Label>Last Name</Form.Label>
+                                    <Form.Label>Efternamn</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter last name"
+                                        placeholder="Ange efternamn"
                                         value={lastName}
                                         onChange={(e) => setLastName(e.target.value)}
                                         required
@@ -58,10 +58,10 @@ function registerPage() {
                                 </Form.Group>
 
                                 <Form.Group className="mb-3" controlId="formEmail">
-                                    <Form.Label>Email</Form.Label>
+                                    <Form.Label>Epost</Form.Label>
                                     <Form.Control
                                         type="email"
-                                        placeholder="Enter email"
+                                        placeholder="Ange epost"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
@@ -69,10 +69,10 @@ function registerPage() {
                                 </Form.Group>
 
                                 <Form.Group className="mb-3" controlId="formPassword">
-                                    <Form.Label>Password</Form.Label>
+                                    <Form.Label>Lösenord</Form.Label>
                                     <Form.Control
                                         type="password"
-                                        placeholder="Enter password"
+                                        placeholder="Ange lösenord"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
@@ -82,10 +82,10 @@ function registerPage() {
                                     {isSubmitting ? (
                                         <>
                                             <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                            Register
+                                            Registrerar
                                         </>
                                     ) : (
-                                        "Register"
+                                        "Registrera"
                                     )}
                                 </Button>
                                 <Button
@@ -93,7 +93,7 @@ function registerPage() {
                                     className="w-100 mt-2"
                                     onClick={() => navigate("/login")}
                                 >
-                                    Already have an account? Login
+                                    Har du redan ett konto? Logga in
                                 </Button>
                                 <div className="text-danger mt-2 text-center">{errormessage}</div>
                             </form>

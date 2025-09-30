@@ -18,7 +18,7 @@ function LoginPage() {
       navigate("/recipes");
     } catch (err) {
       console.error("Login failed:", err);
-      setErrorMessage('Invalid email or password.');
+      setErrorMessage('felaktigt email eller lösenord.');
     }
   }
 
@@ -33,10 +33,10 @@ function LoginPage() {
 
               <form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formEmail">
-                  <Form.Label>Email</Form.Label>
+                  <Form.Label>Epost</Form.Label>
                   <Form.Control
                     type="email"
-                    placeholder="Enter email"
+                    placeholder="Ange epost"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -44,20 +44,20 @@ function LoginPage() {
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formPassword">
-                  <Form.Label>Password</Form.Label>
+                  <Form.Label>Lösenord</Form.Label>
                   <Form.Control
                     type="password"
-                    placeholder="Enter password"
+                    placeholder="ange lösenord"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                 </Form.Group>
                 <Button variant="primary" type="submit" className="w-100">
-                  Login
+                  Logga in
                 </Button>
                 <Button variant="link" className="w-100 mt-2" onClick={() => navigate("/register")}>
-                  Create new account
+                  Skapa nytt konto
                 </Button>
                 <div className="text-danger mt-2 text-center">{errormessage}</div>
               </form>
