@@ -63,7 +63,7 @@ export default function RecipesListPage() {
     return (
         <div className="container py-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
-                <h2>Recipes</h2>
+                <h2>Recept</h2>
                 {!!user && (
                     <button
                         className="btn btn-primary"
