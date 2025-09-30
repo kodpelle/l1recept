@@ -32,10 +32,17 @@ export default function RecipeNewPage() {
         e.preventDefault();
         const name = newIngName.trim();
         if (!name) return;
+
+        if (!user) {
+            alert("Du måste vara inloggad för att föreslå en ingrediens.");
+            return;
+        }
+
         try {
             setSubmitting(true);
             await createPendingIngredient({
-                name
+                name,
+                userId: user.id,
             });
             setNewIngName("");
             setShowSuggest(false);
