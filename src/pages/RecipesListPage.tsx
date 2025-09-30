@@ -69,7 +69,7 @@ export default function RecipesListPage() {
                         className="btn btn-primary"
                         onClick={() => navigate("/recipes/new")}
                     >
-                        Add Recipe
+                        Ladda upp recept
                     </button>
                 )}
             </div>
