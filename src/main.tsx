@@ -5,18 +5,19 @@ import { createBrowserRouter, RouterProvider, } from "react-router-dom";
 import routes from "./routes";
 import App from "./App";
 import { AuthProvider } from "./context/AuthContext";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 
 const router = createBrowserRouter([
   {
-  path: '/',
-  element: (
-    <AuthProvider>
-    <App />,
-    </AuthProvider>
-  ),
-  children: routes as RouteObject[] 
-  } 
+    path: '/',
+    element: (
+      <AuthProvider>
+        <App />,
+      </AuthProvider>
+    ),
+    children: routes as RouteObject[]
+  }
 ]);
 
 // Rendera appen
