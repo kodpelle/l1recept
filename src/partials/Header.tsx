@@ -1,17 +1,31 @@
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { NavLink as RRNavLink } from "react-router-dom";
+import routes from "../routes";
 import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
   const { user, logout } = useAuth();
-
+  const visibleRoutes = routes.filter(r => {
+    if (!r.menuLabel) return false;
+    if (!r.requireRole) return true;
+    return user?.role === r.requireRole;
+  });
   return (
-    <Navbar expand="sm" sticky="top"
-      style={{ backgroundColor: "#8fc6ebff" }}
-      variant="dark">
+    <Navbar expand="sm" sticky="top" variant="dark" style={{ backgroundColor: "#8fc6eb" }}>
       <Container fluid className="px-3">
-        <Navbar.Brand as={Link} to="/">Lätt Recept</Navbar.Brand>
+
+        <Nav className="me-auto">
+          {visibleRoutes.map(r => (
+            <RRNavLink
+              key={r.path}
+              to={r.path!}
+              end
+              className={({ isActive }) => `nav-link ${isActive ? "fw-semibold active" : ""}`}
+            >
+              {r.menuLabel}
+            </RRNavLink>
+          ))}
+        </Nav>
         <Nav className="ms-auto d-flex align-items-center">
           {user ? (
             <>
@@ -23,7 +37,7 @@ export default function Header() {
               </Button>
             </>
           ) : (
-            <Nav.Link as={Link} to="/login">Logga in</Nav.Link>
+            <RRNavLink to="/login" className="nav-link">Logga in</RRNavLink>
           )}
         </Nav>
       </Container>
