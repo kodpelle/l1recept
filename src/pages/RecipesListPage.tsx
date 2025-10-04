@@ -132,5 +132,5 @@ export default function RecipesListPage() {
 RecipesListPage.route = {
     path: "/recipes",
     index: 3,
-    menulabel: "Recipes",
+    menuLabel: "Alla Recept",
 };

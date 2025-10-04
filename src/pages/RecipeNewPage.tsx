@@ -234,7 +234,7 @@ export default function RecipeNewPage() {
 RecipeNewPage.route = {
     path: "/recipes/new",
     index: 4,
-    menuLabel: "New Recipe",
+    menuLabel: "Nytt Recept",
 };
 
 

@@ -132,4 +132,6 @@ export default function AdminPendingIngredientsPage() {
 AdminPendingIngredientsPage.route = {
     path: "/admin/pending/ingredients",
     index: 6,
+    menuLabel: "Ingrediensförslag",
+    requireRole: "admin",
 };
