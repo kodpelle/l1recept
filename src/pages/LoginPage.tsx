@@ -70,6 +70,5 @@ function LoginPage() {
 LoginPage.route = {
   path: "/login",
   index: 1,
-  menuLabel: "Login",
 }
 export default LoginPage;
