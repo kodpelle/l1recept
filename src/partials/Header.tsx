@@ -17,7 +17,7 @@ export default function Header() {
       <Container fluid className="px-3">
         <Navbar.Brand className="text-light" as={Link} to="/">Lätt Recept</Navbar.Brand>
 
-        <Navbar.Toggle aria-controls="main-offcanvas" className="text-light" />
+        <Navbar.Toggle aria-controls="main-offcanvas" />
 
         <Navbar.Offcanvas
           id="main-offcanvas"
@@ -25,8 +25,8 @@ export default function Header() {
           placement="end"
           className="app-offcanvas"
         >
-          <Offcanvas.Header closeButton className="text-light" style={{
-            background: "linear-gradient(135deg, #0f1213ff, #3b3934ff)",
+          <Offcanvas.Header closeButton className="text-dark" style={{
+            background: "linear-gradient(135deg, #eeeed4ff, #f0e9d8ff)",
           }}>
             <Offcanvas.Title id="main-offcanvas-label">Meny</Offcanvas.Title>
           </Offcanvas.Header>
