@@ -7,6 +7,7 @@ import {
     type PendingIngredient,
 } from "../services/recipes";
 import { INGREDIENT_CATEGORIES } from "../constants/ingredientCategories";
+import NotFound from "./NotFound";
 
 export default function AdminPendingIngredientsPage() {
     const { user } = useAuth();
@@ -60,7 +61,7 @@ export default function AdminPendingIngredientsPage() {
     }
 
     if (!user || user.role !== "admin") {
-        return <div className="container py-4">Inte behörig.</div>;
+        return <NotFound />;
     }
 
     return (
