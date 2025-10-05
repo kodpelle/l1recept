@@ -135,4 +135,4 @@ AdminPendingIngredientsPage.route = {
     index: 6,
     menuLabel: "Ingrediensförslag",
     requireRole: "admin",
-};
+}
