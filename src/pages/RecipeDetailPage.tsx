@@ -120,7 +120,7 @@ export default function RecipeDetailPage() {
                 </Link>
 
                 {canEdit && (
-                    <Link to={`/edit/${recipeId}`} className="btn btn-secondary mb-3 me-3">
+                    <Link to={`/edit/${recipeId}`} className="btn btn-primary mb-3 me-3">
                         Redigera recept
                     </Link>
                 )}
