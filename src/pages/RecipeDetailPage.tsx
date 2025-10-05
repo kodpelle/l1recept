@@ -144,7 +144,7 @@ export default function RecipeDetailPage() {
                         <h2 className="mb-1">{recipe.title}</h2>
                         {recipe.createdAt && (
                             <p className="text-muted mb-3">
-                                skapad: {new Date(recipe.createdAt).toLocaleString()}
+                                skapad: {new Date(recipe.createdAt).toLocaleDateString("sv-SE")}
                             </p>
                         )}
                         {shortDesc && <p className="lead">{shortDesc}</p>}
@@ -211,7 +211,7 @@ export default function RecipeDetailPage() {
                                                     <StarRating value={rv.rating} /> ({rv.rating} / 5)
                                                 </strong>
                                                 <small className="text-muted">
-                                                    {new Date(rv.createdAt).toLocaleString()}
+                                                    {new Date(rv.createdAt).toLocaleDateString()}
                                                 </small>
                                             </div>
                                             {rv.comment && <div className="mt-1">{rv.comment}</div>}
