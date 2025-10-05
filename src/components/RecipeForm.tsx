@@ -54,7 +54,7 @@ export function RecipeForm({
                 onChange={(e) => update({ shortDesc: e.target.value })}
                 required
             />
-            <label htmlFor="instructions" className="form-label d-flex align-items-center ">
+            <label htmlFor="" className="form-label d-flex align-items-center ">
                 Instruktioner
                 <button
                     type="button"
@@ -69,7 +69,7 @@ export function RecipeForm({
 
             {showInstrHelp && (
                 <div id="instrHelp" className="alert alert-info py-2 small mb-2">
-                    Skriv <strong>en rad per steg</strong>. Ex:
+                    Skriv <strong>ett steg per rad</strong>. Ex:
                     <br />Skala löken
                     <br />Hacka den fint
                     <br />Fräs i smör
@@ -79,7 +79,7 @@ export function RecipeForm({
             <textarea
                 className="form-control"
                 rows={4}
-                placeholder="En rad per steg"
+                placeholder="Ett steg per rad"
                 value={current.instructions}
                 onChange={(e) => update({ instructions: e.target.value })}
             />
