@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export type RecipeFormValues = {
     title: string;
@@ -9,48 +9,77 @@ export type RecipeFormValues = {
 
 export function RecipeForm({
     initial,
-    submitting,
-    onSubmit,
-    onCancel,
+    values,
+    onChange,
 }: {
     initial: RecipeFormValues;
-    submitting?: boolean;
-    onSubmit: (values: RecipeFormValues) => Promise<void> | void;
-    onCancel?: () => void;
+    values?: RecipeFormValues;
+    onChange?: (values: RecipeFormValues) => void;
 }) {
-    const [title, setTitle] = useState(initial.title);
-    const [shortDesc, setShortDesc] = useState(initial.shortDesc);
-    const [instructions, setInstructions] = useState(initial.instructions);
-    const [imageUrl, setImageUrl] = useState(initial.imageUrl);
+    const isControlled = values !== undefined && typeof onChange === "function";
+
+
+    const [local, setLocal] = useState<RecipeFormValues>(initial);
+
+
+    useEffect(() => {
+        if (!isControlled) setLocal(initial);
+    }, [initial, isControlled]);
+
+    const current = isControlled ? (values as RecipeFormValues) : local;
+
+    function update(patch: Partial<RecipeFormValues>) {
+        const next = { ...current, ...patch };
+        if (isControlled) {
+            onChange!(next);
+        } else {
+            setLocal(next);
+        }
+    }
 
     return (
-        <form
-            onSubmit={(e) => { e.preventDefault(); onSubmit({ title, shortDesc, instructions, imageUrl }); }}
-            className="d-flex flex-column gap-3"
-        >
-            <input className="form-control" placeholder="Titel" value={title} onChange={e => setTitle(e.target.value)} required />
+        <div className="d-flex flex-column gap-3">
+            <input
+                className="form-control"
+                placeholder="Titel"
+                value={current.title}
+                onChange={(e) => update({ title: e.target.value })}
+                required
+            />
 
-            <input className="form-control" placeholder="Kort beskrivning" value={shortDesc} onChange={e => setShortDesc(e.target.value)} required />
+            <input
+                className="form-control"
+                placeholder="Kort beskrivning"
+                value={current.shortDesc}
+                onChange={(e) => update({ shortDesc: e.target.value })}
+                required
+            />
 
-            <textarea className="form-control" placeholder="Instruktioner" rows={4} value={instructions} onChange={e => setInstructions(e.target.value)} />
+            <textarea
+                className="form-control"
+                placeholder="Instruktioner"
+                rows={4}
+                value={current.instructions}
+                onChange={(e) => update({ instructions: e.target.value })}
+            />
 
-            <input className="form-control" placeholder="Bild-URL (valfri)" value={imageUrl} onChange={e => setImageUrl(e.target.value)} />
+            <input
+                className="form-control"
+                placeholder="Bild-URL (valfri)"
+                value={current.imageUrl}
+                onChange={(e) => update({ imageUrl: e.target.value })}
+            />
 
-            {imageUrl && (
+            {current.imageUrl && (
                 <div className="mt-2">
                     <img
-                        src={imageUrl}
+                        src={current.imageUrl}
                         alt="Förhandsgranskning"
                         style={{ maxWidth: 200, borderRadius: 8 }}
                         onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
                     />
                 </div>
             )}
-
-            <div className="d-flex gap-2">
-                <button className="btn btn-primary" type="submit" disabled={submitting}>{submitting ? "Sparar…" : "Spara"}</button>
-                {onCancel && <button className="btn btn-secondary" type="button" onClick={onCancel} disabled={submitting}>Avbryt</button>}
-            </div>
-        </form>
+        </div>
     );
 }
