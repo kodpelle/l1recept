@@ -11,6 +11,8 @@ export default function EditPage() {
     const { user } = useAuth();
     const [recipe, setRecipe] = useState<Recipe | null>(null);
 
+
+
     useEffect(() => {
         if (id) {
             getRecipeById(Number(id))
@@ -25,6 +27,14 @@ export default function EditPage() {
 
     if (!recipe) {
         return <div>Laddar...</div>;
+    }
+
+    if (recipe && user) {
+        const isOwner = recipe.userId === user.id;
+        const isAdmin = user.role.includes("admin");
+        if (!isOwner && !isAdmin) {
+            return <NotFound />;
+        }
     }
 
     return (
