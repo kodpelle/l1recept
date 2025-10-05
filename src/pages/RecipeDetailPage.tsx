@@ -7,7 +7,7 @@ import {
     createReview,
     type RecipeReview,
     deleteRecipeCascade,
-    type Recipe
+
 } from "../services/recipes";
 import { useAuth } from "../context/AuthContext";
 import { StarRating } from "../components/StarRating";
