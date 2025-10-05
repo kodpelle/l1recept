@@ -20,7 +20,7 @@ export function RecipeForm({
 
 
     const [local, setLocal] = useState<RecipeFormValues>(initial);
-
+    const [showInstrHelp, setShowInstrHelp] = useState(false);
 
     useEffect(() => {
         if (!isControlled) setLocal(initial);
@@ -54,11 +54,32 @@ export function RecipeForm({
                 onChange={(e) => update({ shortDesc: e.target.value })}
                 required
             />
+            <label htmlFor="instructions" className="form-label d-flex align-items-center ">
+                Instruktioner
+                <button
+                    type="button"
+                    className="btn btn-sm btn-outline-secondary ms-2"
+                    onClick={() => setShowInstrHelp(v => !v)}
+                    aria-expanded={showInstrHelp}
+                    aria-controls="instrHelp"
+                >
+                    ?
+                </button>
+            </label>
+
+            {showInstrHelp && (
+                <div id="instrHelp" className="alert alert-info py-2 small mb-2">
+                    Skriv <strong>en rad per steg</strong>. Ex:
+                    <br />Skala löken
+                    <br />Hacka den fint
+                    <br />Fräs i smör
+                </div>
+            )}
 
             <textarea
                 className="form-control"
-                placeholder="Instruktioner"
                 rows={4}
+                placeholder="En rad per steg"
                 value={current.instructions}
                 onChange={(e) => update({ instructions: e.target.value })}
             />

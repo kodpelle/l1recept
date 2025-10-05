@@ -1,10 +1,18 @@
 import { Navbar, Nav, Container, Button, Offcanvas } from "react-bootstrap";
-import { NavLink as RRNavLink, Link } from "react-router-dom";
+import { NavLink as RRNavLink, Link, useLocation } from "react-router-dom";
 import routes from "../routes";
 import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
+import React from "react";
 
 export default function Header() {
   const { user, logout } = useAuth();
+  const [open, setOpen] = React.useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname])
 
   const visibleRoutes = routes.filter(r => {
     if (!r.menuLabel) return false;
@@ -17,13 +25,16 @@ export default function Header() {
       <Container fluid className="px-3">
         <Navbar.Brand className="text-light" as={Link} to="/">Lätt Recept</Navbar.Brand>
 
-        <Navbar.Toggle aria-controls="main-offcanvas" />
+        <Navbar.Toggle aria-controls="main-offcanvas" onClick={() => setOpen(true)} />
 
         <Navbar.Offcanvas
           id="main-offcanvas"
           aria-labelledby="main-offcanvas-label"
           placement="end"
           className="app-offcanvas"
+          show={open}
+          onHide={() => setOpen(false)}
+
         >
           <Offcanvas.Header closeButton className="text-dark" style={{
             background: "linear-gradient(135deg, #eeeed4ff, #f0e9d8ff)",
@@ -55,7 +66,7 @@ export default function Header() {
                   <div className="small text-muted mb-2">
                     Inloggad som <strong className="text-dark">{user.email}</strong>
                   </div>
-                  <Button variant="outline-primary" onClick={logout}>
+                  <Button variant="outline-primary" onClick={() => { logout(); setOpen(false); }} >
                     Logga ut
                   </Button>
                 </>
