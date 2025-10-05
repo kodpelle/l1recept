@@ -6,7 +6,8 @@ import {
     getReviewsByRecipeId,
     createReview,
     type RecipeReview,
-    deleteRecipeCascade
+    deleteRecipeCascade,
+    type Recipe
 } from "../services/recipes";
 import { useAuth } from "../context/AuthContext";
 import { StarRating } from "../components/StarRating";
@@ -26,6 +27,9 @@ export default function RecipeDetailPage() {
     const [myRating, setMyRating] = useState<number>(5);
     const [myComment, setMyComment] = useState("");
     const navigate = useNavigate();
+
+    const canEdit = !!user && (user.role.includes("admin") || (recipe && user.id === recipe.userId));
+
 
     useEffect(() => {
         (async () => {
@@ -114,7 +118,14 @@ export default function RecipeDetailPage() {
                 <Link to="/recipes" className="btn btn-primary mb-3 me-3">
                     ← Tillbaka till alla
                 </Link>
-                {user?.role === "admin" && (
+
+                {canEdit && (
+                    <Link to={`/edit/${recipeId}`} className="btn btn-secondary mb-3 me-3">
+                        Redigera recept
+                    </Link>
+                )}
+
+                {canEdit && (
                     <button className="btn btn-danger mb-3" onClick={handleDelete}>Ta bort recept</button>)}
 
                 <div className="row align-items-start mb-4">
