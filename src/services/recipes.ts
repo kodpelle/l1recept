@@ -42,6 +42,18 @@ export interface PendingIngredient {
     createdAt: string;
 }
 
+export type RecipeUpdate = Partial<Pick<Recipe, "title" | "description" | "imageUrl">>;
+
+export async function updateRecipe(id: number, updates: RecipeUpdate): Promise<Recipe> {
+    const res = await fetch(`/api/recipes/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updates),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
 
 export async function getRecipes(): Promise<Recipe[]> {
     const res = await fetch('/api/recipes');
